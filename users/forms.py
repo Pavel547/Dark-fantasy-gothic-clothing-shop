@@ -7,7 +7,7 @@ from .models import CustomUser
 User = get_user_model()
 
 
-class CustoUserCreationForm(UserCreationForm):
+class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(max_length=250, required=True, widget=forms.EmailInput(attrs={'placeholder': 'EMAIL'}))
     first_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'placeholder': 'FIRST NAME'}))
     last_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'placeholder': 'LAST NAME'}))
@@ -37,18 +37,18 @@ class CustoUserCreationForm(UserCreationForm):
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(required=True, max_length=250, widget=forms.EmailInput(attrs={'placeholder': 'EMAIL'}))
     password = forms.CharField(required=True, max_length=250, widget=forms.PasswordInput(attrs={'placeholder': 'PASSWORD'}))
+
     
     def clean(self):
         email = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
         
-        if email and password:
-            self.user_cache = authenticate(self.request, email=email, password=password)
-            
-            if self.user_cache is None:
-                raise forms.ValidationError('Invalid password or email')
-            elif not self.user_cache.is_active():
-                raise forms.ValidationError('This account is inactive')
+        self.user_cache = authenticate(self.request, email=email, password=password)
+        
+        if self.user_cache is None:
+            raise forms.ValidationError('Invalid password or email')
+        elif not self.user_cache.is_active():
+            raise forms.ValidationError('User is inactive')
         return self.cleaned_data
     
     
@@ -68,7 +68,7 @@ class CustomUserUpdateForm(forms.ModelForm):
         
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if email and CustomUser.objects.filter(email=email).exclude(id=self.initial.id).exists():
+        if email and CustomUser.objects.filter(email=email).exclude(id=self.instance.id).exists():
             raise forms.ValidationError('User with this email is already exists')
         return self.cleaned_data
     
@@ -76,7 +76,7 @@ class CustomUserUpdateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = self.clean()
         if not cleaned_data.get('email'):
-            cleaned_data['email'] = self.initial.email
+            cleaned_data['email'] = self.instance.email
         
         for field in ['country', 'city', 'postal_code', 'address']:
             if cleaned_data.get(field):
