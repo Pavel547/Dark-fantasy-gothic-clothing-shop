@@ -4,11 +4,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% comment %}HTMX{% endcomment %}
+    <!-- HTMX -->
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
-    {% comment %}Tailwindcss{% endcomment %}
+    <!-- Tailwindcss -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    {% comment %}Css style{% endcomment %}
+    <!-- CSS style -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <title>
       {% block title %}
@@ -17,11 +17,15 @@
     </title>
   </head>
   <body>
-    {% block content %}
-      <main>
-        <div></div>
-        <h1 class="text-9xl">ShopName</h1>
-      </main>
+    {% block header %}
+
     {% endblock %}
+    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {% block content %}
+        <div id="main-content">
+          {% include 'main/home.html' %}
+        </div>
+      {% endblock %}
+    </main>
   </body>
 </html>

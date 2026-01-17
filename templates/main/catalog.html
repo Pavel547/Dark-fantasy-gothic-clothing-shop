@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block header %}
+  {% include 'main/header.html' %}
+{% endblock %}
+
+{% block content %}
+  <div>
+    <div class="w-xs">
+      <ul class="space-y-4">
+        {% if categories %}
+          {% for category in categories %}
+            <li>
+              <a href="{% url 'main:catalog' category.slug %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">{{ category.name }}</a>
+            </li>
+          {% endfor %}
+        {% else %}
+          <p>No avalible categories</p>
+        {% endif %}
+      </ul>
+    </div>
+    <div>
+      {% if products %}
+        {% for product in products %}
+          <h3>{{ product.name }}</h3>
+        {% endfor %}
+      {% else %}
+        <p>NO AVALIBLE PRODUCTS</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

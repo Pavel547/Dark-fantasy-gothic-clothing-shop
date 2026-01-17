@@ -1,0 +1,23 @@
+<header>
+  <div class="mx-auto my-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+    <div>
+      <h1 class="text-gray-900 text-6xl hover:text-gray-600 transition-colors duration-300"><a href="{% url 'main:index' %}">ShopName</a></h1>
+    </div>
+    <div>
+      <ul class="flex space-x-5">
+        <li>
+          <a href="{% url 'main:catalog_all' %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">shop</a>
+        </li>
+        <li>
+          <a href="#" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">contact</a>
+        </li>
+        <li>
+          <a href="{% url 'users:profile' %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">account</a>
+        </li>
+        <li>
+          <a href="#" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">cart (0)</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>

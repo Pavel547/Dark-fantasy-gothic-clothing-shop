@@ -1,0 +1,21 @@
+<div class="relative h-screen w-full">
+  <nav class="absolute left-6 top-1/2 -translate-y-1/2 z-20">
+    <ul class="space-y-2">
+      <li>
+        <a href="{% url 'main:catalog_all' %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">shop</a>
+      </li>
+      <li>
+        <a href="#" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">contact</a>
+      </li>
+      <li>
+        <a href="{% url 'users:profile' %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">account</a>
+      </li>
+      <li>
+        <a href="#" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">cart</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="absolute inset-0 flex items-center justify-center z-10">
+    <h1 class="text-9xl font-bold text-gray-900">ShopName</h1>
+  </div>
+</div>

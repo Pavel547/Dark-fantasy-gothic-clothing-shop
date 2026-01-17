@@ -24,9 +24,10 @@ class CatalogView(ListView):
     template_name = 'main/catalog.html'
     model = Product
     context_object_name = 'products'
+    ordering = ['-created_at']
     
     # Filtration functions for get_queryset method
-    FILTER_FUNCRIONS = {
+    FILTER_FUNC = {
         'min_price': lambda queryset, value: queryset.filter(price__gte=value),
         'max_price': lambda queryset, value: queryset.filter(price__lte=value), 
         'color': lambda queryset, value: queryset.filter(color__iexact=value), 
@@ -39,15 +40,13 @@ class CatalogView(ListView):
         category_slug = self.kwargs.get('category_slug')
         
         if category_slug:
-            current_category = Category.objects.filter(slug=category_slug)
+            current_category = get_object_or_404(Category, slug=category_slug)
             qs = qs.filter(category=current_category)            
         
-        for params, filter_func in self.FILTER_FUNCRIONS.items():
+        for params, filter_func in self.FILTER_FUNC.items():
             value = self.request.GET.get(params)
             if value:
                 qs = filter_func(qs, value)
-            else:
-                qs = ''
         return qs
     
     
@@ -56,12 +55,8 @@ class CatalogView(ListView):
         context['categories'] = Category.objects.all()
         context['sizes'] = Size.objects.all()
         
-        for param in self.FILTER_FUNCRIONS.keys():
-            value = self.request.GET.get(param)
-            if value:
-                context[param] = value
-            else:
-                context[param] = ''
+        for param in self.FILTER_FUNC.keys():
+            context[param] = self.request.GET.get(param, '')
                 
         return context
         
