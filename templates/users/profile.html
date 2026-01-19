@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% include 'main/header.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="flex">
+    <!-- profile menu -->
+    <div>
+      <ul>
+        <li>
+          <a href="" class="text-lg">Edit data</a>
+        </li>
+        <li>
+          <a href="" class="text-lg">Cart</a>
+        </li>
+        <li>
+          <a href="text-lg">Order history</a>
+        </li>
+      </ul>
+    </div>
+    <!-- User data -->
+    <div class="bg-gray-200">
+      <p>{{ user.first_name }}</p>
+      <p>{{ user.last_name }}</p>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,5 @@
+<div class="grid lg:grid-cols-4 lg:gap-4">
+  {% for item in cart_items.all %}
+    {{ item.product.name }}
+  {% endfor %}
+</div>

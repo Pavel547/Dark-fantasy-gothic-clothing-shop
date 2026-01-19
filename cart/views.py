@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http.response import JsonResponse
+from django.contrib import messages
 from django.views.generic import View
 from django.template.response import TemplateResponse
 from .models import Cart, CartItem
@@ -14,77 +14,124 @@ class CartMixin:
         if hasattr(request, 'cart'):
             return request.session.cart
         
-        if request.session.session_key:
+        if not request.session.session_key:
             return request.session.create()
         
         cart, created = Cart.objects.get_or_create(
             session_key=request.session.session_key
         )
         
-        request.session['cart_id'] = cart.id
-        request.session.modified = True
-        
         return cart
     
     
-class CartPageView(CartMixin, View):
+class CartDetailView(CartMixin, View):
     def get(self, request):
         cart = self.get_cart(request)
         
         context = {
-            'total_price': cart.subtotal,
+            'cart': cart,
             'cart_items': cart.items.select_related(
-                'product', 'product_size__size').order_by('-created_at')
+                'product', 'product_size__size').order_by('-added_at')
         }
         
-        return redirect(request, 'cart/cart.html', context)
+        return TemplateResponse(request, 'cart/cart.html', context)
     
 
 class AddToCartView(CartMixin, View):
+    @transaction.atomic
     def post(self, request, slug):
         cart = self.get_cart(request)
-        product = get_object_or_404(Product, slug=slug) 
+        product = get_object_or_404(Product, slug=slug)
         
-        form = AddToCartForm(request.POST, product)
+        form = AddToCartForm(request.POST, product=product)
         
         if not form.is_valid():
-            return JsonResponse({
-                'error': 'Invalid form data',
-                'form_errors': form.errors,
-            }, status=400)
-        
+            messages.error(request, f'Invalid data {form.errors}.')
+
         size_id = form.cleaned_data.get('size_id')
         if size_id:
-            product_size = get_object_or_404(ProductSize, id=size_id,
-                                             product=product)
+            product_size = get_object_or_404(
+                ProductSize,
+                product=product,
+                id=size_id
+            )
         else:
-            product_size = product.product_size.filter(
-                stock__gt=0).first()
+            product_size = product.product_sizes.filter(stock__gt=0).first()
             if not product_size:
-                return JsonResponse({
-                    'error': 'No avalible sizes now'
-                }, status=400)
-                
+                messages.info(request, 'No sizes avalible now.')
+        
         quantity = form.cleaned_data.get('quantity')
-        if quantity > product_size.stock:
-            return JsonResponse({
-                'error': f'Only {product_size.stock} avalible now'
-            }, status=400)
+        if quantity > product.product_sizes.stock:
+            messages.info(request, 
+                          f'Only {product.product_sizes.stock} avalible now')
             
-        existing_item = cart.items.filter(
-            product=product, product_size=product_size).first()
+        existing_item = get_object_or_404(CartItem, cart=cart, product=product)
         if existing_item:
-            total_item = existing_item.quantity + quantity
-            if total_item.quantity > product_size.stock:
-                return JsonResponse({
-                    'error': f"""Cannot add {total_item.quantity}. 
-                    Only {product_size.stock - existing_item.quantity} avalible now."""
-                }, status=400)
+            total_quantity = existing_item.quantity + quantity
+            if total_quantity > product.product_sizes.stock:
+                message = f"""Cannot add {total_quantity} items. 
+                Only {product.product_sizes.stock} avalible."""
+                messages.info(request, message=message)
                 
         cart_item = cart.add_item(product, product_size, quantity)
-                
-        request.session['cart_id'] = cart.id
-        request.session.modified = True
         
-        return redirect('cart:cart_page')
+        message.info(request, f'{product.name} succesfully add to cart')
         
+        return redirect('cart:details')
+        
+        
+class UpdateCartItemView(CartMixin, View):
+    @transaction.atomic
+    def post(self, request, item_id):
+        cart = self.get_cart(request)
+        cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
+        
+        quantity = request.POST.get('quantity', 1)
+        
+        if quantity < 0:
+            messages.error(request, 'Invalid quantity')
+            
+        if quantity == 0:
+            cart_item.delete()
+        else:
+            if quantity > cart_item.product_size.stock:
+                messages.error(request, 
+                               f'Only {cart_item.product_size.stock} avalible now')
+            cart_item.quantity = quantity
+            cart_item.save()
+        
+        context = {
+            'cart': cart,
+            'cart_items': cart.items.select_related(
+                'prodcut', 'product_size__size').order_by('-added_at')
+        }
+        
+        return TemplateResponse(request, 'cart/cart.html', context)
+    
+    
+class DeleteCartItemView(CartMixin, View):
+    def post(self, request, item_id):
+        cart = self.get_cart(request)
+        
+        try:
+            cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
+            cart_item.delete()
+            
+            context = {
+                'cart': cart,
+                'cart_items': cart.items.select_related(
+                    'product', 'product_size__size').order_by('-added_at')
+            }
+            
+            return TemplateResponse(request, 'cart/cart.html', context)
+        except CartItem.DoesNotExist:
+            messages.error(request, 'Item not found')
+            
+
+class ClearCartView(CartMixin, View):
+    def post(self, request):
+        cart = self.get_cart(request)
+        cart.clear()
+        
+        messages.info(request, 'Cart successfully cleared')
+        return TemplateResponse(request, 'cart/cart.html', {'cart': cart})

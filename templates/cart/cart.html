@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% include 'main/header.html' %}
+{% endblock %}
+
+{% block content %}
+  <div>
+    {% if cart_items.exists %}
+      {% include 'cart/partials/cart_items.html' %}
+    {% else %}
+      {% include 'cart/partials/empty_cart.html' %}
+    {% endif %}
+  </div>
+{% endblock %}

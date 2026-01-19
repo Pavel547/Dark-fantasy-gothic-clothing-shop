@@ -90,7 +90,7 @@ DATABASES = {
         'PASSWORD': os.getenv('PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
-        'ATOMIC_REQUEST': True,
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -143,3 +143,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+SESSION_SAVE_EVERY_REQUEST = True

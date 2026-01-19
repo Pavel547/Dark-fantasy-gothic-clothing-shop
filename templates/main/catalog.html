@@ -4,9 +4,12 @@
 {% endblock %}
 
 {% block content %}
-  <div>
-    <div class="w-xs">
-      <ul class="space-y-4">
+  <div class="flex items-center">
+    <div class="mr-15">
+      <ul class="space-y-2">
+        <li>
+          <a href="{% url 'main:catalog_all' %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">all</a>
+        </li>
         {% if categories %}
           {% for category in categories %}
             <li>
@@ -20,9 +23,19 @@
     </div>
     <div>
       {% if products %}
-        {% for product in products %}
-          <h3>{{ product.name }}</h3>
-        {% endfor %}
+        <div class="grid grid-cols-1 gap-2 lg:grid-cols-4 lg:gap-10">
+          {% for product in products %}
+            <div>
+              <div>
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" />
+              </div>
+              <div>
+                <p>{{ product.name }}</p>
+                <p>{{ product.price }} €</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       {% else %}
         <p>NO AVALIBLE PRODUCTS</p>
       {% endif %}
