@@ -4,38 +4,27 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex items-center">
-    <div class="mr-15">
-      <ul class="space-y-2">
-        <li>
-          <a href="{% url 'main:catalog_all' %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">all</a>
-        </li>
+  <div class="flex">
+    <div class="mr-3">
+      <ul class="space-y-1">
         {% if categories %}
+          <li>
+            <a href="{% url 'main:catalog_all' %}" class="text-xl text-gray-900 hover:text-gray-600 transition-colors duration-300">all</a>
+          </li>
           {% for category in categories %}
             <li>
-              <a href="{% url 'main:catalog' category.slug %}" class="text-lg text-gray-900 hover:text-gray-600 transition-colors duration-300">{{ category.name }}</a>
+              <a href="{% url 'main:catalog' category.slug %}" class="text-xl text-gray-900 hover:text-gray-600 transition-colors duration-300">{{ category.name }}</a>
             </li>
           {% endfor %}
+          <p class="text-xl text-gray-900">FILTERS</p>
         {% else %}
-          <p>No avalible categories</p>
+          <p class="text-gray-900 text-2xl">No avalible categories</p>
         {% endif %}
       </ul>
     </div>
     <div>
       {% if products %}
-        <div class="grid grid-cols-1 gap-2 lg:grid-cols-4 lg:gap-10">
-          {% for product in products %}
-            <div>
-              <div>
-                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" />
-              </div>
-              <div>
-                <p>{{ product.name }}</p>
-                <p>{{ product.price }} €</p>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
+        {% include 'main/partials/items_catalog.html' %}
       {% else %}
         <p>NO AVALIBLE PRODUCTS</p>
       {% endif %}

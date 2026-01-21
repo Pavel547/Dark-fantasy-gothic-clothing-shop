@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% include 'main/header.html' %}
+{% endblock %}
+
+{% block content %}
+  <div>
+    <p class="text-gray-800 text-lg hover:text-gray-600 duration-300">
+      <a href="{% url 'main:catalog_all' %}">CATALOG</a> /
+      <a href="{% url 'main:catalog' product.category.slug %}">{{ product.category.slug|upper }}</a> /
+      {{ product.slug|upper }}
+    </p>
+    <div class="lg:flex mt-3 gap-10">
+      <div class="flex justify-center lg:block">
+        <img src="{{ product.main_image.url }}" alt="{{ product.name }} image" class="max-w-xs sm:max-w-xl lg:max-w-2xl" />
+      </div>
+      <!-- Приклад як зробити контейнер на сайті -->
+      <div class="mt-6 lg:mt-0 max-w-xl px-2">
+        <div class="mb-4">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ product.name }}</h3>
+          <p class="text-3xl font-semibold text-gray-800">{{ product.price }} €</p>
+        </div>
+        <div class="mb-6">
+          <p class="text-sm text-gray-600 mb-2">Description:</p>
+          <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
+        </div>
+        <div class="flex"></div>
+
+        <div class="flex gap-4">
+          <button class="bg-gray-900 text-white px-6 py-3 hover:bg-gray-700 transition-colors duration-300">Add to Cart</button>
+          <button class="border border-gray-900 text-gray-900 px-6 py-3 hover:bg-gray-100 transition-colors duration-300">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Similar items -->
+  {% if similar_products %}
+    {% include 'main/partials/similar_items.html' %}
+  {% else %}
+    <div class="text-gray-900 max-w-xl border-1 border-gray-900">No similar items</div>
+  {% endif %}
+{% endblock %}

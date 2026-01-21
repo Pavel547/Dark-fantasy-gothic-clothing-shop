@@ -1,0 +1,17 @@
+<div class="border-gray-300 border-1 mt-6">
+  <div class="grid lg:grid-cols-4 lg:gap-10 py-3 px-3">
+    {% for product in similar_products %}
+      <a href="{% url 'main:product' product.slug %}">
+        <div>
+          <div>
+            <img src="{{ product.main_image.url }}" alt="{{ product.name|upper }} image" />
+          </div>
+          <div>
+            <p>{{ product.name }}</p>
+            <p>{{ product.price }} €</p>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
