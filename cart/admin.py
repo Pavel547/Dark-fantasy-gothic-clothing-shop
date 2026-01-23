@@ -14,7 +14,7 @@ class CartAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'updated_at')
     search_fields = ('session_key',)
     readonly_fields = ('total_items', 'subtotal')
-    inlines = (CartItemInline, )
+    inlines = [CartItemInline]
     
     
 @admin.register(CartItem)

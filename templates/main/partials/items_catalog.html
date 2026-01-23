@@ -1,6 +1,6 @@
 <div class="grid grid-cols-1 gap-2 lg:grid-cols-4 lg:gap-10">
   {% for product in products %}
-    <div class="hover:shadow-xl/30 transition-colors duration-600">
+    <div class="hover:shadow-xl/30 transition-shadow duration-700 ease-in-out lg:px-3 lg:py-3">
       <a href="{% url 'main:product' product.slug %}">
         <div>
           <img src="{{ product.main_image.url }}" alt="{{ product.name|upper }} image" />

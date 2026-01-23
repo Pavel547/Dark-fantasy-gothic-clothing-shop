@@ -20,7 +20,14 @@
     {% block header %}
 
     {% endblock %}
-    <main class="mx-auto px-4 sm:px-3 lg:px-8 lg:py-8">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <main class="mx-auto">
       {% block content %}
         <div id="main-content">
           {% include 'main/home.html' %}

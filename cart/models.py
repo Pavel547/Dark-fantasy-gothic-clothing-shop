@@ -21,11 +21,11 @@ class Cart(models.Model):
         return sum(item.total_price for item in self.items.all())
     
     
-    def add_item(self, product, size, quantity=1):
+    def add_item(self, product, product_size, quantity=1):
         cart_item, created = CartItem.objects.get_or_create(
             cart=self,
             product=product,
-            size=size,
+            product_size=product_size,
             defaults={'quantity': quantity} # Read more about defaults parameter
         )
         

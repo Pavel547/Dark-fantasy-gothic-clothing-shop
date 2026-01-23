@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <div>
-    <p class="text-gray-800 text-lg hover:text-gray-600 duration-300">
-      <a href="{% url 'main:catalog_all' %}">CATALOG</a> /
-      <a href="{% url 'main:catalog' product.category.slug %}">{{ product.category.slug|upper }}</a> /
+  <div class="lg:mx-8 lg:mt-8">
+    <p class="text-gray-800 text-lg">
+      <a href="{% url 'main:catalog_all' %}" class="hover:text-gray-600 duration-300">CATALOG</a> /
+      <a href="{% url 'main:catalog' product.category.slug %}" class="hover:text-gray-600 duration-300">{{ product.category.slug|upper }}</a> /
       {{ product.slug|upper }}
     </p>
     <div class="lg:flex mt-3 gap-10">
@@ -25,11 +25,28 @@
           <p class="text-sm text-gray-600 mb-2">Description:</p>
           <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
         </div>
-        <div class="flex"></div>
+        <!-- Add to cart block -->
+        <div>
+          <form action="{% url 'cart:add_to_cart' product.slug %}" method="post">
+            {% csrf_token %}
+            <h2 class="text-gray-900 text-2xl">Size</h2>
+            {% if product.product_sizes.all %}
+              <div class="flex flex-wrap gap-2">
+                {% for product_size in product.product_sizes.all %}
+                  <div>
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="radio" name="size_id" id="size-{{ product_size.id }}" value="{{ product_size.id }}" class="hidden peer" {% if not product_size.on_stock %}disabled{% endif %}/>
+                    <label for="size-{{ product_size.id }}" class="inline-block px-4 py-2 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] hover:border-gray-900 hover:bg-gray-50 hover:text-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900 active:scale-95 peer-disabled:bg-gray-400">{{ product_size.size.name }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
 
-        <div class="flex gap-4">
-          <button class="bg-gray-900 text-white px-6 py-3 hover:bg-gray-700 transition-colors duration-300">Add to Cart</button>
-          <button class="border border-gray-900 text-gray-900 px-6 py-3 hover:bg-gray-100 transition-colors duration-300">Buy Now</button>
+            {% endif %}
+            <div class="flex gap-4 mt-4">
+              <button class="bg-gray-900 text-white px-6 py-3 hover:bg-gray-700 transition-colors duration-300" type="submit">Add to Cart</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

@@ -5,25 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex">
-    <!-- profile menu -->
-    <div>
-      <ul>
-        <li>
-          <a href="" class="text-lg">Edit data</a>
-        </li>
-        <li>
-          <a href="" class="text-lg">Cart</a>
-        </li>
-        <li>
-          <a href="text-lg">Order history</a>
-        </li>
-      </ul>
-    </div>
+  <div class="flex lg:mx-8 lg:gap-8">
+    <!-- Menu -->
+    {% include 'users/partials/menu.html' %}
     <!-- User data -->
-    <div class="bg-gray-200">
-      <p>{{ user.first_name }}</p>
-      <p>{{ user.last_name }}</p>
-    </div>
+    {% include 'users/partials/user_data.html' %}
   </div>
 {% endblock %}

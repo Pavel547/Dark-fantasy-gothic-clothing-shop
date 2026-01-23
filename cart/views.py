@@ -12,10 +12,10 @@ import json
 class CartMixin:
     def get_cart(self, request):
         if hasattr(request, 'cart'):
-            return request.session.cart
+            return request.cart
         
         if not request.session.session_key:
-            return request.session.create()
+            request.session.create()
         
         cart, created = Cart.objects.get_or_create(
             session_key=request.session.session_key
@@ -46,36 +46,30 @@ class AddToCartView(CartMixin, View):
         form = AddToCartForm(request.POST, product=product)
         
         if not form.is_valid():
-            messages.error(request, f'Invalid data {form.errors}.')
+            messages.error(request, f'{ form.errors }')
+            return redirect('main:product', product.slug)
 
         size_id = form.cleaned_data.get('size_id')
-        if size_id:
-            product_size = get_object_or_404(
-                ProductSize,
-                product=product,
-                id=size_id
-            )
-        else:
-            product_size = product.product_sizes.filter(stock__gt=0).first()
-            if not product_size:
-                messages.info(request, 'No sizes avalible now.')
+        quantity = form.cleaned_data.get('quantity', 1)
         
-        quantity = form.cleaned_data.get('quantity')
-        if quantity > product.product_sizes.stock:
+        
+        product_size = get_object_or_404(ProductSize, product=product, id=size_id)
+        
+        if quantity > product_size.stock:
             messages.info(request, 
                           f'Only {product.product_sizes.stock} avalible now')
             
-        existing_item = get_object_or_404(CartItem, cart=cart, product=product)
+        existing_item = cart.items.filter(product=product, product_size=product_size).first()
         if existing_item:
             total_quantity = existing_item.quantity + quantity
-            if total_quantity > product.product_sizes.stock:
+            if total_quantity > product_size.stock:
                 message = f"""Cannot add {total_quantity} items. 
                 Only {product.product_sizes.stock} avalible."""
                 messages.info(request, message=message)
                 
         cart_item = cart.add_item(product, product_size, quantity)
         
-        message.info(request, f'{product.name} succesfully add to cart')
+        messages.info(request, f'{product.name} succesfully add to cart')
         
         return redirect('cart:details')
         
