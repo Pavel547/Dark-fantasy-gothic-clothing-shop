@@ -36,12 +36,18 @@
                   <div>
                     <input type="hidden" name="quantity" value="1">
                     <input type="radio" name="size_id" id="size-{{ product_size.id }}" value="{{ product_size.id }}" class="hidden peer" {% if not product_size.on_stock %}disabled{% endif %}/>
-                    <label for="size-{{ product_size.id }}" class="inline-block px-4 py-2 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] hover:border-gray-900 hover:bg-gray-50 hover:text-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900 active:scale-95 peer-disabled:bg-gray-400">{{ product_size.size.name }}</label>
+                    <label for="size-{{ product_size.id }}" 
+                    class="
+                    {% if not product_size.on_stock %} 
+                      cursor-not-allowed inline-block px-4 py-2 border-2 border-gray-300 rounded-lg transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] bg-gray-400
+                    {% else %} 
+                      inline-block px-4 py-2 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] hover:border-gray-900 hover:bg-gray-50 hover:text-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900 active:scale-95 peer-disabled:bg-gray-400 
+                    {% endif %}">{{ product_size.size.name }}</label>
                   </div>
                 {% endfor %}
               </div>
             {% else %}
-
+              <div class="border-2 border-gray-900 px-3 py-3 text-xl max-w-xl text-center">Not avalible sizes</div>
             {% endif %}
             <div class="flex gap-4 mt-4">
               <button class="bg-gray-900 text-white px-6 py-3 hover:bg-gray-700 transition-colors duration-300" type="submit">Add to Cart</button>

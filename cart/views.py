@@ -11,19 +11,47 @@ import json
 
 class CartMixin:
     def get_cart(self, request):
-        if hasattr(request, 'cart'):
-            return request.cart
-        
-        if not request.session.session_key:
-            request.session.create()
-        
-        cart, created = Cart.objects.get_or_create(
-            session_key=request.session.session_key
-        )
-        
-        return cart
-    
-    
+        if request.user.is_authenticated:
+            cart, created = Cart.objects.get_or_create(
+                user=request.user
+            )
+            return cart
+        else:
+            if not request.session.session_key:
+                request.session.create()
+                
+            cart, created = Cart.objects.get_or_create(
+                session_key=request.session.session_key,
+            )
+            return cart
+
+
+    def merge_carts(self, request, old_session):
+        if old_session:
+            old_cart = Cart.objects.filter(
+                session_key=old_session,
+                user__isnull=True
+            ).first()
+            
+            if old_cart:
+                new_cart, created = Cart.objects.get_or_create(
+                    user=request.user
+                )
+                
+                for item in old_cart.items.all():
+                    cart_item, created = CartItem.objects.get_or_create(
+                        cart=new_cart,
+                        product=item.product,
+                        product_size=item.product_size,
+                        defaults={'quantity': item.quantity}
+                    )
+                    
+                    if not created:
+                        cart_item.quantity += item.quantity
+                        cart_item.save()
+                    
+                old_cart.delete()
+                        
 class CartDetailView(CartMixin, View):
     def get(self, request):
         cart = self.get_cart(request)
@@ -58,6 +86,7 @@ class AddToCartView(CartMixin, View):
         if quantity > product_size.stock:
             messages.info(request, 
                           f'Only {product.product_sizes.stock} avalible now')
+            return redirect('main:product', product.slug)
             
         existing_item = cart.items.filter(product=product, product_size=product_size).first()
         if existing_item:

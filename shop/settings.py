@@ -145,3 +145,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 86400
