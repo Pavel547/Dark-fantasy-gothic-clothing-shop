@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex lg:mx-8 lg:my-4">
+  <div class="flex mx-4 my-2 lg:mx-8 lg:my-4">
     <div class="mr-3">
       <ul class="space-y-1">
         {% if categories %}
@@ -16,7 +16,10 @@
               <a href="{% url 'main:catalog' category.slug %}" class="text-xl text-gray-900 hover:text-gray-600 transition-colors duration-300">{{ category.name }}</a>
             </li>
           {% endfor %}
-          <p class="text-xl text-gray-900">FILTERS</p>
+          <div class="mt-6">
+            <p class="text-xl text-gray-900">FILTERS</p>
+            {% include 'main/partials/filters.html' %}
+          </div>
         {% else %}
           <p class="text-gray-900 text-2xl">No avalible categories</p>
         {% endif %}

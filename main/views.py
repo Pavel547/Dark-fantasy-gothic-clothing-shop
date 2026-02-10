@@ -31,8 +31,8 @@ class CatalogView(ListView):
         'min_price': lambda queryset, value: queryset.filter(price__gte=value),
         'max_price': lambda queryset, value: queryset.filter(price__lte=value), 
         'color': lambda queryset, value: queryset.filter(color__iexact=value), 
-        'size': lambda queryset, value: queryset.filter(product_size__size__name=value), 
-        'on_stock': lambda queryset, value: queryset.filter(product_size__on_stock=value),
+        'size': lambda queryset, value: queryset.filter(product_sizes__size__name=value), 
+        'on_stock': lambda queryset, value: queryset.filter(product_sizes__on_stock=value),
     }
     
     def get_queryset(self):
@@ -54,6 +54,13 @@ class CatalogView(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['sizes'] = Size.objects.all()
+        
+        category_slug = self.kwargs.get('category_slug')
+        if category_slug:
+            context['current_category'] = get_object_or_404(
+                Category,
+                slug=category_slug
+            )
         
         for param in self.FILTER_FUNC.keys():
             context[param] = self.request.GET.get(param, '')

@@ -1,3 +1,28 @@
 <div>
-  <form action="{% url 'main:catalog' %}"></form>
+  <form method="get"
+    class="mt-1"
+    action="{% if current_category %}
+      {% url 'main:catalog' current_category.slug %}
+    {% else %}
+      {% url 'main:catalog_all' %}
+    {% endif %}">
+    <div class="grid grid-cols-1 space-y-2">
+      <h3 class="text-lg text-gray-900">Price:</h3>
+      <input type="number" name="min_price" placeholder="Min" value="{{ min_price|default:'' }}" class="text-lg text-gray-900 border-1 border-gray-900 focus:outline-none focus:border-gray-400" />
+      <input type="number" name="max_price" placeholder="Max" value="{{ max_price|default:'' }}" class="text-lg text-gray-900 border-1 border-gray-900 focus:outline-none focus:border-gray-400" />
+    </div>
+    <div class="grid grid-cols-1 mt-2">
+      <h3 class="text-lg text-gray-900">Sizes:</h3>
+      <select name="size">
+        <option value="">Any size</option>
+        {% for size in sizes %}
+          <option value="{{ size.name }}">{{ size.name|upper }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mt-2"></div>
+    <div class="mt-2">
+      <button type="submit" class="border-2 border-gray-900 text-xl px-3 py-3 cursor-pointer hover:bg-gray-900 hover:text-gray-300">FILTER</button>
+    </div>
+  </form>
 </div>

@@ -4,7 +4,7 @@ from main.models import ProductSize
 
 
 class AddToCartForm(forms.Form):
-    size_id = forms.IntegerField(required=False)
+    size_id = forms.IntegerField(required=False, )
     quantity  = forms.IntegerField(min_value=1, initial=1)
     
     def __init__(self, *args, product=None,**kwargs):
@@ -17,20 +17,22 @@ class AddToCartForm(forms.Form):
                 self.fields['size_id'] = forms.ChoiceField(
                     choices=[(ps.id, ps.size.name) for ps in sizes],
                     initial=sizes.first().id,
-                    required=True)
+                    required=True,
+                    error_messages={'required': 'Please select size'})
                 
         
-    def clean_size(self, product=None):
-        size_id = self.cleaned_data["size_id"]
-        self.product = product
+    def clean_size(self):
+        size_id = self.cleaned_data.get('size_id')
+        product = self.product
+        
+        if not size_id:
+            raise forms.ValidationError('Please select size')
         
         product_size = ProductSize.objects.filter(
-            product=product,
-            id=size_id,
-            stock__gt=0
-        ).exists()
+            product=product, id=size_id, in_stock__gt=0).exists()
+        
         if not product_size:
-            raise forms.ValidationError('Size does not exists')
+            raise forms.ValidationError('Size not availible now')           
         
         return size_id
     

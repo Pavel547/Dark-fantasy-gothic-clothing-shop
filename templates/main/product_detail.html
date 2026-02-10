@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="lg:mx-8 lg:mt-8">
+  <div class="mx-4 mt-4 lg:mx-8 lg:mt-8">
     <p class="text-gray-800 text-lg">
       <a href="{% url 'main:catalog_all' %}" class="hover:text-gray-600 duration-300">CATALOG</a> /
       <a href="{% url 'main:catalog' product.category.slug %}" class="hover:text-gray-600 duration-300">{{ product.category.slug|upper }}</a> /
@@ -15,7 +15,6 @@
       <div class="flex justify-center lg:block">
         <img src="{{ product.main_image.url }}" alt="{{ product.name }} image" class="max-w-xs sm:max-w-xl lg:max-w-2xl" />
       </div>
-      <!-- Приклад як зробити контейнер на сайті -->
       <div class="mt-6 lg:mt-0 max-w-xl px-2">
         <div class="mb-4">
           <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ product.name }}</h3>
@@ -27,32 +26,42 @@
         </div>
         <!-- Add to cart block -->
         <div>
-          <form action="{% url 'cart:add_to_cart' product.slug %}" method="post">
-            {% csrf_token %}
-            <h2 class="text-gray-900 text-2xl">Size</h2>
-            {% if product.product_sizes.all %}
-              <div class="flex flex-wrap gap-2">
+          {% if product.product_sizes.all %}
+            <form action="{% url 'cart:add_to_cart' product.slug %}" method="post">
+              {% csrf_token %}
+              <h2 class="text-gray-900 text-2xl">Size</h2>
+              <div class="flex flex-wrap gap-2 mt-2">
                 {% for product_size in product.product_sizes.all %}
                   <div>
-                    <input type="hidden" name="quantity" value="1">
                     <input type="radio" name="size_id" id="size-{{ product_size.id }}" value="{{ product_size.id }}" class="hidden peer" {% if not product_size.on_stock %}disabled{% endif %}/>
                     <label for="size-{{ product_size.id }}" 
                     class="
                     {% if not product_size.on_stock %} 
                       cursor-not-allowed inline-block px-4 py-2 border-2 border-gray-300 rounded-lg transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] bg-gray-400
                     {% else %} 
-                      inline-block px-4 py-2 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] hover:border-gray-900 hover:bg-gray-50 hover:text-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900 active:scale-95 peer-disabled:bg-gray-400 
+                      inline-block px-4 py-2 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-300 text-gray-700 font-medium text-center min-w-[50px] hover:border-gray-900 hover:bg-gray-900 hover:text-gray-50 peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900 active:scale-95 peer-disabled:bg-gray-400 
                     {% endif %}">{{ product_size.size.name }}</label>
                   </div>
                 {% endfor %}
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                  {% endfor %}
+                {% endif %}
               </div>
-            {% else %}
-              <div class="border-2 border-gray-900 px-3 py-3 text-xl max-w-xl text-center">Not avalible sizes</div>
-            {% endif %}
-            <div class="flex gap-4 mt-4">
-              <button class="bg-gray-900 text-white px-6 py-3 hover:bg-gray-700 transition-colors duration-300" type="submit">Add to Cart</button>
-            </div>
-          </form>
+              <div class="mt-4">
+                <h2 class="text-2xl text-gray-900">Quantity:</h2>
+                <div class="mt-2">
+                  <input type="number" name="quantity" value="1" class="px-1 text-lg text-gray-900 border-1 border-gray-900 focus:outline-none focus:border-gray-400">
+                </div>
+              </div>
+              <div class="flex gap-4 mt-4">
+                <button class="bg-gray-900 text-white px-6 py-3 hover:bg-gray-700 transition-colors duration-300" type="submit">Add to Cart</button>
+              </div>
+            </form>
+          {% else %}
+              <div class="border-2 border-gray-900 px-3 py-3 text-xl max-w-xl text-center">The product is out of stock.</div>
+          {% endif %}
         </div>
       </div>
     </div>

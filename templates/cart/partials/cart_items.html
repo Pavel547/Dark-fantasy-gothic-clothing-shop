@@ -5,7 +5,7 @@
     <p class="text-gray-900 text-lg">Subtotal: {{ cart.subtotal }} €</p>
   </div>
 
-  <div class="grid grid-cols-1 gap-2 lg:grid-cols-4 lg:gap-10 shadow-xl/30">
+  <div class="grid grid-cols-1 gap-2 lg:grid-cols-4 lg:gap-10 shadow-xl/30 lg:px-5 lg:py-5">
     {% for item in cart_items %}
       <div class="lg:px-3 lg:py-3 border-1 border-gray-200">
         <div>
@@ -15,9 +15,20 @@
           <div>
             <p class="lg:text-xl text-gray-900">{{ item.product.name }}</p>
             <p class="lg:text-lg text-gray-900">{{ item.product.price }} €</p>
+            <form action="{% url 'cart:delete_item' item.id %} " method="post">
+              {% csrf_token %}
+              <button type="submit" class="text-gray-900 text-lg hover:text-gray-400 transition-color duration-700">Delete</button>
+            </form>
           </div>
           <div>
-            <p class="lg:text-lg text-gray-900">Quantity: {{ item.quantity }}</p>
+            <div>
+              <form action="{% url 'cart:update_quantity' item.id %}" method="post" class="flex">
+                {% csrf_token %}
+                <p class="lg:text-lg text-gray-900">Quantity:</p>
+                <input type="number" value="{{ item.quantity }}" class="w-15 px-1 ml-2 border-1 border-gray-900" name="quantity" />
+                <button class="text-gray-900 text-lg ml-2">Save</button>
+              </form>
+            </div>
             <p class="lg:text-lg text-gray-900">Total price: {{ item.total_price }} €</p>
           </div>
         </div>

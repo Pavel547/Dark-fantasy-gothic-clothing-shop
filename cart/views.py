@@ -74,7 +74,9 @@ class AddToCartView(CartMixin, View):
         form = AddToCartForm(request.POST, product=product)
         
         if not form.is_valid():
-            messages.error(request, f'{ form.errors }')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
             return redirect('main:product', product.slug)
 
         size_id = form.cleaned_data.get('size_id')
@@ -84,17 +86,18 @@ class AddToCartView(CartMixin, View):
         product_size = get_object_or_404(ProductSize, product=product, id=size_id)
         
         if quantity > product_size.stock:
-            messages.info(request, 
-                          f'Only {product.product_sizes.stock} avalible now')
+            messages.info(request,
+                          f'Only {product_size.stock} pieces avalible now')
             return redirect('main:product', product.slug)
             
         existing_item = cart.items.filter(product=product, product_size=product_size).first()
         if existing_item:
             total_quantity = existing_item.quantity + quantity
             if total_quantity > product_size.stock:
-                message = f"""Cannot add {total_quantity} items. 
-                Only {product.product_sizes.stock} avalible."""
+                message = f"""Cannot add {quantity} items. 
+                Only {product_size.stock - existing_item.quantity} more available."""
                 messages.info(request, message=message)
+                return redirect('main:product', product.slug)
                 
         cart_item = cart.add_item(product, product_size, quantity)
         
@@ -109,27 +112,22 @@ class UpdateCartItemView(CartMixin, View):
         cart = self.get_cart(request)
         cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
         
-        quantity = request.POST.get('quantity', 1)
+        quantity = int(request.POST.get('quantity'))
         
         if quantity < 0:
             messages.error(request, 'Invalid quantity')
+            return redirect('cart:details')
             
         if quantity == 0:
             cart_item.delete()
+            return redirect('cart:details')
         else:
             if quantity > cart_item.product_size.stock:
                 messages.error(request, 
                                f'Only {cart_item.product_size.stock} avalible now')
             cart_item.quantity = quantity
             cart_item.save()
-        
-        context = {
-            'cart': cart,
-            'cart_items': cart.items.select_related(
-                'prodcut', 'product_size__size').order_by('-added_at')
-        }
-        
-        return TemplateResponse(request, 'cart/cart.html', context)
+            return redirect('cart:details')
     
     
 class DeleteCartItemView(CartMixin, View):
@@ -140,13 +138,7 @@ class DeleteCartItemView(CartMixin, View):
             cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
             cart_item.delete()
             
-            context = {
-                'cart': cart,
-                'cart_items': cart.items.select_related(
-                    'product', 'product_size__size').order_by('-added_at')
-            }
-            
-            return TemplateResponse(request, 'cart/cart.html', context)
+            return redirect('cart:details')
         except CartItem.DoesNotExist:
             messages.error(request, 'Item not found')
             
@@ -157,4 +149,4 @@ class ClearCartView(CartMixin, View):
         cart.clear()
         
         messages.info(request, 'Cart successfully cleared')
-        return TemplateResponse(request, 'cart/cart.html', {'cart': cart})
+        return redirect('cart:details')
