@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from orders.models import Order
 from cart.views import CartMixin
+from .email import order_confirmation
 
 logger = logging.getLogger(__name__)
 
@@ -76,12 +77,13 @@ def stripe_webhook(request):
             order.order_status = 'processing'
             order.payment_status = 'paid'
             order.save()
+            order_confirmation(order_id)
         except Order.DoesNotExist:
             logger.error(f'Order {order_id} not found')
             return HttpResponse(status=400)
     else:
         session = event['data']['object']
-        order_id = event['metadata'].get('order_id')
+        order_id = session['metadata'].get('order_id')
         try:
             order = get_object_or_404(Order, id=order_id)
             order.payment_status = 'failed'

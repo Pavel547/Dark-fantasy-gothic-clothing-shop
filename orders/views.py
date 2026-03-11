@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class CheckoutView(CartMixin, View):
     def get(self, request):
         cart = self.get_cart(request)
+        logger.debug('Render checkoutpage')
         
         if cart.total_items == 0:
             logger.warning('Cart is empty redirect to cart page')

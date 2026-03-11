@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Confirmation</title>
+    <style>
+      @media only screen and (max-width: 620px) {
+        .wrapper {
+          padding: 16px 0 !important;
+        }
+        .main-container {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .section-pad {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+        }
+        .header-pad {
+          padding: 28px 20px 16px 20px !important;
+        }
+        .header-title {
+          font-size: 32px !important;
+        }
+        .confirmed-title {
+          font-size: 18px !important;
+        }
+        .confirmed-pad {
+          padding: 24px 20px 10px 20px !important;
+        }
+        .product-img-cell {
+          width: 64px !important;
+          padding: 10px !important;
+        }
+        .product-img {
+          width: 44px !important;
+          height: 44px !important;
+        }
+        .product-price {
+          font-size: 13px !important;
+          white-space: nowrap;
+        }
+        .total-label {
+          font-size: 13px !important;
+        }
+        .total-price {
+          font-size: 16px !important;
+        }
+        .footer-pad {
+          padding: 20px 20px !important;
+        }
+        .footer-title {
+          font-size: 16px !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Courier New', Courier, monospace;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="wrapper" style="background-color: #f5f5f5; padding: 40px 0;">
+      <tr>
+        <td align="center">
+          <!-- Main container -->
+          <table width="600" cellpadding="0" cellspacing="0" border="0" class="main-container" style="background-color: #ffffff; border: 1px solid #1a1a2e; max-width: 600px; width: 100%;">
+            <!-- Header -->
+            <tr>
+              <td align="center" class="header-pad" style="padding: 40px 40px 20px 40px; border-bottom: 2px solid #1a1a2e;">
+                <h1 class="header-title" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 42px; font-weight: 900; color: #1a1a2e; letter-spacing: 2px;">ShopName</h1>
+                <p style="margin: 8px 0 0 0; font-size: 11px; letter-spacing: 4px; color: #555555; text-transform: uppercase;">order confirmation</p>
+              </td>
+            </tr>
+
+            <!-- Order confirmed title -->
+            <tr>
+              <td align="center" class="confirmed-pad" style="padding: 36px 40px 10px 40px;">
+                <h2 class="confirmed-title" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; color: #1a1a2e; font-weight: 700; letter-spacing: 1px;">✦ Your order has been confirmed ✦</h2>
+                <p style="margin: 12px 0 0 0; font-size: 13px; color: #555555; line-height: 1.7;">Thank you for your purchase. Your order is being prepared and will be shipped shortly.</p>
+              </td>
+            </tr>
+
+            <!-- Divider -->
+            <tr>
+              <td class="section-pad" style="padding: 20px 40px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="border-top: 1px solid #dddddd;"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Order Information -->
+            <tr>
+              <td class="section-pad" style="padding: 0 40px 20px 40px;">
+                <h3 style="margin: 0 0 16px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #1a1a2e; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid #1a1a2e; padding-bottom: 8px;">Order Information</h3>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">Order number:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">#{{ order.id }}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">Order status:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">{{ order.status }}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">Payment:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">{{ order.payment_status }}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">Date:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">{{ order.updated_at|date:'d M Y' }}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Delivery Information -->
+            <tr>
+              <td class="section-pad" style="padding: 0 40px 20px 40px;">
+                <h3 style="margin: 0 0 16px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #1a1a2e; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid #1a1a2e; padding-bottom: 8px;">Delivery Information</h3>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">Country:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">{{ order.country }}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">City:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">{{ order.city }}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; font-size: 13px; color: #555555;">Address:</td>
+                    <td style="padding: 5px 0; font-size: 13px; color: #1a1a2e; font-weight: 700; text-align: right;">{{ order.address }}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Products -->
+            <tr>
+              <td class="section-pad" style="padding: 0 40px 20px 40px;">
+                <h3 style="margin: 0 0 16px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #1a1a2e; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid #1a1a2e; padding-bottom: 8px;">Products</h3>
+
+                {% for item in order.items.all %}
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 12px; border: 1px solid #e0e0e0;">
+                    <tr>
+                      <td class="product-img-cell" width="80" style="padding: 12px; background-color: #f0f0f0; vertical-align: middle;">
+                        {% if item.product.main_image %}
+                          <img class="product-img" src="{{ item.product.main_image.url }}" width="60" height="60" alt="{{ item.product.name }}" style="display: block; object-fit: cover;" />
+                        {% endif %}
+                      </td>
+                      <td style="padding: 12px; vertical-align: middle;">
+                        <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: #1a1a2e; font-family: Georgia, 'Times New Roman', serif;">{{ item.product.name }}</p>
+                        <p style="margin: 0; font-size: 12px; color: #777777;">Size: {{ item.size }} &nbsp;|&nbsp; Qty: {{ item.quantity }}</p>
+                      </td>
+                      <td class="product-price" style="padding: 12px; text-align: right; vertical-align: middle; white-space: nowrap;">
+                        <p style="margin: 0; font-size: 13px; font-weight: 700; color: #1a1a2e;">{{ item.total_price }} €</p>
+                      </td>
+                    </tr>
+                  </table>
+                {% endfor %}
+              </td>
+            </tr>
+
+            <!-- Total -->
+            <tr>
+              <td class="section-pad" style="padding: 0 40px 32px 40px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 2px solid #1a1a2e;">
+                  <tr>
+                    <td class="total-label" style="padding-top: 12px; font-size: 14px; color: #1a1a2e; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Total items: {{ order.total_items }}</td>
+                    <td class="total-price" style="padding-top: 12px; text-align: right; font-size: 18px; font-weight: 900; color: #1a1a2e; font-family: Georgia, 'Times New Roman', serif; white-space: nowrap;">{{ order.total_price }} €</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td align="center" class="footer-pad" style="padding: 24px 40px; background-color: #1a1a2e; border-top: 2px solid #1a1a2e;">
+                <p class="footer-title" style="margin: 0 0 6px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 18px; color: #ffffff; font-weight: 700; letter-spacing: 2px;">ShopName</p>
+                <p style="margin: 0; font-size: 11px; color: #aaaaaa; letter-spacing: 3px; text-transform: uppercase;">thank you for your order</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
