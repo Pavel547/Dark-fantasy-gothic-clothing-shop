@@ -6,7 +6,6 @@ from .models import Category, Product, Size
 
 class IndexView(TemplateView):
     template_name = 'base.html'
-    
 
 class CatalogView(ListView):
     template_name = 'main/catalog.html'

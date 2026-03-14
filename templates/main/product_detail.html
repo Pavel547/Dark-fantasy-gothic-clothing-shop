@@ -6,20 +6,25 @@
 
 {% block content %}
   <div class="mx-4 mt-4 lg:mx-8 lg:mt-8">
+    <!--Path-->
     <p class="text-gray-800 text-lg">
       <a href="{% url 'main:catalog_all' %}" class="hover:text-gray-600 transition-colors duration-300">CATALOG</a> /
       <a href="{% url 'main:catalog' product.category.slug %}" class="hover:text-gray-600 transition-colors duration-300">{{ product.category.slug|upper }}</a> /
       {{ product.slug|upper }}
     </p>
+    <!--Product block-->
     <div class="lg:flex mt-3 gap-10">
+      <!--Product image-->
       <div class="flex justify-center lg:block">
         <img src="{{ product.main_image.url }}" alt="{{ product.name }} image" class="max-w-xs sm:max-w-xl lg:max-w-2xl" />
       </div>
       <div class="mt-6 lg:mt-0 max-w-xl px-2">
+        <!--Product description-->
         <div class="mb-4">
           <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ product.name }}</h3>
           <p class="text-3xl font-semibold text-gray-800">{{ product.price }} €</p>
         </div>
+        
         <div class="mb-6">
           <p class="text-sm text-gray-600 mb-2 md:text-2xl">Description:</p>
           <p class="text-gray-700 md:text-xl ">{{ product.description }}</p>
@@ -43,11 +48,6 @@
                     {% endif %}">{{ product_size.size.name }}</label>
                   </div>
                 {% endfor %}
-                {% if messages %}
-                  {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                  {% endfor %}
-                {% endif %}
               </div>
               <div class="mt-4">
                 <h2 class="text-2xl text-gray-900">Quantity:</h2>
