@@ -13,6 +13,7 @@ class CatalogView(ListView):
     model = Product
     context_object_name = 'products'
     paginate_by = 10
+    ordering = '-created_at'
     
     # Filtration functions for get_queryset method
     FILTER_FUNC = {
