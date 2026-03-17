@@ -40,16 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
-
+    'cloudinary',
+    
     'users',
     'main',
     'cart',
     'orders',
-    'payment',
-    
-    'cloudinary',
-    'cloudinary_storage'
+    'payment', 
 ]
 
 MIDDLEWARE = [
@@ -102,7 +101,7 @@ DATABASES = {
 
 # Cloudinary storage
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLAUDE_NAME'),
+    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
