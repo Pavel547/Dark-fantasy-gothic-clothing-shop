@@ -142,7 +142,7 @@
                     <tr>
                       <td class="product-img-cell" width="80" style="padding: 12px; background-color: #f0f0f0; vertical-align: middle;">
                         {% if item.product.main_image %}
-                          <img class="product-img" src="{{ domain }}{{ item.product.main_image.url }}" width="60" height="60" alt="{{ item.product.name }}" style="display: block; object-fit: cover;" />
+                          <img class="product-img" src="{{ item.product.main_image.url }}" width="60" height="60" alt="{{ item.product.name }}" style="display: block; object-fit: cover;" />
                         {% endif %}
                       </td>
                       <td style="padding: 12px; vertical-align: middle;">

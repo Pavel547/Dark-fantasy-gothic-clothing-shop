@@ -175,7 +175,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 STRIPE_WEBHOOK = os.getenv('STRIPE_WEBHOOK')
 
-# Email sending 
+# Email sending only for dev
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -183,6 +183,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
+# Email sending for prod
+RESEND_API_KEY = os.getenv('RESEND_API_KEY')
+
+# Logs 
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
 os.makedirs(LOG_DIR, exist_ok=True)
 
